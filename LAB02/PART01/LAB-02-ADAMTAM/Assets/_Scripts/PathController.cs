@@ -42,7 +42,7 @@ public class PathController : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.anyKeyDown) {
+        if (Input.GetMouseButtonDown(0)) {
             isWalking = !isWalking;
             animator.SetBool(WALKING, isWalking);
         }
@@ -53,7 +53,8 @@ public class PathController : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (!other.CompareTag("Waypoint") && other.name == $"{index}") return;
+        if (!other.CompareTag("Waypoint")) return;
+        if (!(other.name == $"{index}")) return;
         index++;
         target = pathManager.GetNext(); 
     }
