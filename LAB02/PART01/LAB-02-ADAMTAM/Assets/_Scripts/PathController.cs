@@ -7,6 +7,7 @@ public class PathController : MonoBehaviour {
     [SerializeField] Animator animator;
 
     readonly string WALKING = "isWalking";
+    readonly string HIT = "Hit";
 
     List<Waypoint> path;
     Waypoint target;
@@ -14,6 +15,8 @@ public class PathController : MonoBehaviour {
     public float moveSpeed;
     public float rotateSpeed;
     bool isWalking;
+    bool isObstructed;
+    GameObject currentObstruction;
     int index;
 
     void Start() {
@@ -43,7 +46,25 @@ public class PathController : MonoBehaviour {
 
     void Update() {
         if (Input.GetMouseButtonDown(0)) {
+            if (isObstructed) {
+                print("Player is obstructed!");
+                return;
+            }
             isWalking = !isWalking;
+            animator.SetBool(WALKING, isWalking);
+        }
+
+        if (Input.GetMouseButtonDown(1)) {
+            if (!isObstructed) {
+                print("No need to attack...");
+                return;
+            }
+            print("Breaking wall!");
+            isObstructed = false;
+            Destroy(currentObstruction);
+            currentObstruction = null;
+            isWalking = true;
+            animator.SetTrigger(HIT);
             animator.SetBool(WALKING, isWalking);
         }
 
@@ -57,5 +78,14 @@ public class PathController : MonoBehaviour {
         if (!(other.name == $"{index}")) return;
         index++;
         target = pathManager.GetNext(); 
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (!collision.gameObject.CompareTag("Breakable")) return;
+        print("Player has stopped...");
+        currentObstruction = collision.gameObject;
+        isObstructed = true;
+        isWalking = false;
+        animator.SetBool(WALKING, isWalking);
     }
 }
