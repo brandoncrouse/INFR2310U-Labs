@@ -5,8 +5,10 @@ using UnityEngine;
 public class PathManager : MonoBehaviour {
     [HideInInspector]
     [SerializeField] List<Waypoint> path;
+    [SerializeField] bool legacy;
     public GameObject prefab;
     int index = 0;
+    bool forwards;
 
     public List<GameObject> Points;
 
@@ -21,13 +23,26 @@ public class PathManager : MonoBehaviour {
     }
 
     public Waypoint GetNext() {
-        index = (index + 1) % path.Count;
-        print(path[index].Index);
-        return path[index];
+        if (legacy) {
+            index = (index + 1) % path.Count;
+            return path[index];
+        } else {
+            if (index + 1 == path.Count) forwards = false;
+            if (index - 1 < 0) forwards = true;
+            if (forwards) {
+                index = (index + 1);
+                return path[index];
+            } else {
+                index = (index - 1);
+                return path[index];
+            }
+        }
+        
     }
 
     private void Start() {
         Points = new List<GameObject>();
+        forwards = true;
         int index = 0;
         foreach(Waypoint point in path) {
             GameObject go = Instantiate(prefab);

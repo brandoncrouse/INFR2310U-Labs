@@ -17,9 +17,13 @@ public class PathController : MonoBehaviour {
     bool isWalking;
     bool isObstructed;
     GameObject currentObstruction;
+    bool legacy;
     int index;
+    bool dead;
+    bool aggro;
 
     void Start() {
+        MouseCast.Instance.allControllers.Add(this);
         isWalking = false;
         animator.SetBool(WALKING, false);
         path = pathManager.GetPath();
@@ -28,14 +32,14 @@ public class PathController : MonoBehaviour {
 
     void RotateTowardsTarget() {
         float stepSize = rotateSpeed * Time.deltaTime;
-        Vector3 targetDirection = target.Position - transform.position;
+        Vector3 targetDirection = (aggro ? TempPlayer.Instance.Position : target.Position) - transform.position;
         Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, stepSize, 0);
         transform.rotation = Quaternion.LookRotation(newDirection);
     }
 
     void MoveForward() {
         float stepSize = moveSpeed * Time.deltaTime;
-        float distanceToTarget = Vector3.Distance(transform.position, target.Position);
+        float distanceToTarget = Vector3.Distance(transform.position, (aggro ? TempPlayer.Instance.Position : target.Position));
         if (distanceToTarget < stepSize) {
             return;
         }
@@ -45,6 +49,8 @@ public class PathController : MonoBehaviour {
     }
 
     void Update() {
+        if (dead) return;
+        if (path.Count == 0 && !aggro) return;
         if (Input.GetMouseButtonDown(0)) {
             if (isObstructed) {
                 print("Player is obstructed!");
@@ -55,17 +61,19 @@ public class PathController : MonoBehaviour {
         }
 
         if (Input.GetMouseButtonDown(1)) {
-            if (!isObstructed) {
-                print("No need to attack...");
-                return;
+            if (legacy) {
+                if (!isObstructed) {
+                    print("No need to attack...");
+                    return;
+                }
+                print("Breaking wall!");
+                isObstructed = false;
+                Destroy(currentObstruction);
+                currentObstruction = null;
+                isWalking = true;
+                animator.SetTrigger(HIT);
+                animator.SetBool(WALKING, isWalking);
             }
-            print("Breaking wall!");
-            isObstructed = false;
-            Destroy(currentObstruction);
-            currentObstruction = null;
-            isWalking = true;
-            animator.SetTrigger(HIT);
-            animator.SetBool(WALKING, isWalking);
         }
 
         if (!isWalking) return;
@@ -75,8 +83,12 @@ public class PathController : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Waypoint")) return;
-        if (!(other.name == $"{index}")) return;
-        index++;
+        if (!(other.name == $"{target.Index}")) return;
+        /*if (index + 1 < path.Count) {
+            index++;
+        } else {
+
+        }*/
         target = pathManager.GetNext(); 
     }
 
@@ -86,6 +98,19 @@ public class PathController : MonoBehaviour {
         currentObstruction = collision.gameObject;
         isObstructed = true;
         isWalking = false;
+        animator.SetBool(WALKING, isWalking);
+    }
+
+    public void Die() {
+        if (dead) return;
+        print($"{transform} died");
+        dead = true;
+        animator.CrossFade("Die_SwordShield", 0, 0);
+    }
+
+    public void Aggro() {
+        aggro = true;
+        isWalking = true;
         animator.SetBool(WALKING, isWalking);
     }
 }
