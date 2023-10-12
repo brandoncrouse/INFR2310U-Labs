@@ -28,4 +28,8 @@ public class StateManager : MonoBehaviour {
     public State Title() {
         return states[States.Title];
     }
+
+    public State Menu() {
+        return states[States.Menu];
+    }
 }

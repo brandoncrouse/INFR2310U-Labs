@@ -8,7 +8,8 @@ public class TitleState : State {
     CanvasGroup splash, ui;
     ParticleSystem particles;
     Image logo;
-    RectTransform uiRect, logoRect; 
+    RectTransform uiRect, logoRect;
+    GameObject cam;
     public TitleState(GameObject[] gameObjects, StateManager manager) : base(gameObjects, manager) { }
     public override void Setup() {
         splash = gameObjects[0].GetComponent<CanvasGroup>();
@@ -17,6 +18,7 @@ public class TitleState : State {
         logo = splash.transform.GetChild(1).GetComponent<Image>();
         logoRect = logo.rectTransform;
         particles = gameObjects[2].GetComponent<ParticleSystem>();
+        cam = gameObjects[3];
     }
     public override void Enter() {
         splash.alpha = 1;
@@ -25,8 +27,7 @@ public class TitleState : State {
     }
     public override void Update() {
         if (Input.GetMouseButtonDown(0)) {
-            //GameManager.Instance.SwitchState(manager.)
-            Exit();
+            GameManager.Instance.SwitchState(manager.Menu());
         }
     }
     public override void Exit() {
@@ -41,5 +42,6 @@ public class TitleState : State {
             splash.DOFade(0, .3f).SetEase(Ease.Linear);
         });
         logoRect.DOScale(0, 1).SetEase(Ease.InCubic);
+        cam.SetActive(false);
     }
 }
