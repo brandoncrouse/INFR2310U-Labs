@@ -19,11 +19,17 @@ public class MenuState : State {
     public override void Enter() {
         cam.SetActive(true);
         menuBar.DOAnchorPosX(0, .4f).SetDelay(1.2f);
+        GameManager.Instance.MenuInteractEvent += Interact;
     }
     public override void Update() {
         rotator.Rotate(Vector3.up * -Time.deltaTime * rotateSpeed);
     }
     public override void Exit() {
         cam.SetActive(false);
+        GameManager.Instance.MenuInteractEvent -= Interact;
+    }
+
+    void Interact(int index) {
+        Debug.Log(index);
     }
 }
