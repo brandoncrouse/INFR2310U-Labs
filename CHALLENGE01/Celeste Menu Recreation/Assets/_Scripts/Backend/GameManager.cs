@@ -5,11 +5,12 @@ using System;
 
 public class GameManager : MonoBehaviour {
     public static GameManager Instance { get; private set; }
-    private State currentState;
-    private StateManager stateManager;
+    public State currentState {  get; private set; }  
+    public StateManager stateManager { get; private set; }  
 
-    public GameObject[] TitleObjects;
-    public GameObject[] MenuObjects;
+    public GameObject[] TitleObjects, MenuObjects, CreditObjects, SaveObjects;
+    public bool Switching;
+    public float menuSlideTime;
 
     public event Action<int> MenuInteractEvent;
     private void Awake() {
@@ -22,13 +23,17 @@ public class GameManager : MonoBehaviour {
     }
 
     public void SwitchState(State state) {
-        currentState.Exit();
+        currentState.ExitSequence();
         currentState = state;
         currentState.Enter();
     }
 
     private void Update() {
-        currentState.Update();
+        if (Switching) {
+            Switching = false;
+            return;
+        }
+        currentState.UpdateSequence();
     }
 
     public void Interact(int index) {

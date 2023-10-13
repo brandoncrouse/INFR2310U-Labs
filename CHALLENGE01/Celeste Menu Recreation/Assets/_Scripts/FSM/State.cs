@@ -14,4 +14,14 @@ public abstract class State {
     public abstract void Enter();
     public abstract void Update();
     public abstract void Exit();
+
+
+    public void UpdateSequence() {
+        GameManager.Instance.Switching = false;
+        Update();
+    }
+    public void ExitSequence() {
+        GameManager.Instance.Switching = true;
+        Exit();
+    }
 }

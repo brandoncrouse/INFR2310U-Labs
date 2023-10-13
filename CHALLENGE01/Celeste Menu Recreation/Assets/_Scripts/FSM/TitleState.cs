@@ -19,11 +19,23 @@ public class TitleState : State {
         logoRect = logo.rectTransform;
         particles = gameObjects[2].GetComponent<ParticleSystem>();
         cam = gameObjects[3];
-    }
-    public override void Enter() {
+
         splash.alpha = 1;
         ui.alpha = 1;
+    }
+    public override void Enter() {
+        cam.SetActive(true);
+        splash.blocksRaycasts = true;
+        ui.blocksRaycasts = true;
+
+        logo.DOFade(1, .5f).SetEase(Ease.Linear);
+        splash.DOFade(1, .5f).SetEase(Ease.Linear);
+        logoRect.DOScale(1, 1.5f).SetEase(Ease.InOutCubic);
+        ui.DOFade(1, .5f).SetEase(Ease.Linear);
+
+        uiRect.DOAnchorPosY(0, .5f).SetEase(Ease.InCubic);
         particles.Play();
+        GameManager.Instance.menuSlideTime = 1.2f;
     }
     public override void Update() {
         if (Input.GetMouseButtonDown(0)) {
