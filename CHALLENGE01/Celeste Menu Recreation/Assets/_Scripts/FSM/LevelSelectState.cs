@@ -31,10 +31,12 @@ public class LevelSelectState : State {
 
     public override void Update() {
         if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-            Mathf.Clamp(selectedLevel--, 0, positions.Length-1);
+            if (selectedLevel == 0) return;
+            selectedLevel--;
             SelectLevel();
         } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            Mathf.Clamp(selectedLevel++, 0, positions.Length-1);
+            if ( selectedLevel == positions.Length - 1) return;
+            selectedLevel++;
             SelectLevel();
         } else if (Input.GetKeyDown(KeyCode.Escape)) {
             GameManager.Instance.MaintainCard = true;

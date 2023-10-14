@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public static GameManager Instance { get; private set; }
@@ -35,6 +36,9 @@ public class GameManager : MonoBehaviour {
             return;
         }
         currentState.UpdateSequence();
+        if (Input.GetKeyDown(KeyCode.R)) {
+            SceneManager.LoadScene(0);
+        }
     }
 
     public void Interact(int index) {
