@@ -12,18 +12,36 @@ public class SaveSelectState : State {
     public SaveSelectState(GameObject[] gameObjects, StateManager manager) : base(gameObjects, manager) { }
 
     public override void Enter() {
+        TicketManager ticketManager = gameObjects[0].GetComponent<TicketManager>();
         for (int i = 0; i < tickets.Count; i++) {
             RectTransform tempTicket = tickets[i];
-            tempTicket.GetComponent<Ticket>().interactable = true;
-            tempTicket.DOAnchorPosX(960, .7f).SetDelay(i * .1f);
+            if (ticketManager.selecting) {
+                Debug.Log("selecting");
+                if (ticketManager.index == i) {
+                    Debug.Log("woo");
+                    tempTicket.GetComponent<Ticket>().interactable = true;
+                    tempTicket.GetComponent<Ticket>().Hover();
+                    tempTicket.GetComponent<Ticket>().interactable = false;
+                    tempTicket.DOAnchorPosX(960, .7f).SetDelay(i * .1f);
+                } else
+                {
+                    tempTicket.GetComponent<Ticket>().interactable = true;
+                    tempTicket.DOAnchorPosX(960, .7f).SetDelay(i * .1f);
+                }
+            } else {
+                tempTicket.GetComponent<Ticket>().interactable = true;
+                tempTicket.DOAnchorPosX(960, .7f).SetDelay(i * .1f);
+            }
         }
         container.blocksRaycasts = true;
     }
 
     public override void Exit() {
         for (int i = 0; i < tickets.Count; i++) {
-            tickets[i].GetComponent<Ticket>().interactable = false; 
-            tickets[i].GetComponent<Ticket>().UnHover(); 
+            Ticket temp = tickets[i].GetComponent<Ticket>();
+            temp.interactable = true;
+            temp.UnHover();
+            temp.interactable = false;
             tickets[i].DOAnchorPosX(2250, .7f).SetDelay(i * .1f);
         }
         container.blocksRaycasts = false;

@@ -5,15 +5,9 @@ using UnityEngine;
 
 public class Ticket : MonoBehaviour {
     [SerializeField] RectTransform inside, outside;
-    [SerializeField] Type type;
     public bool interactable;
     Ease ease = Ease.InOutQuad;
     float time = .3f, openAmount = 280;
-
-    enum Type {
-        Used,
-        Empty
-    }
 
     private void Awake() {
         interactable = false;
@@ -31,9 +25,5 @@ public class Ticket : MonoBehaviour {
         if (!interactable) return;
         inside.DOAnchorPosX(0, time).SetEase(ease);
         outside.DOAnchorPosX(0, time).SetEase(ease);
-    }
-
-    public void Click() {
-
     }
 }

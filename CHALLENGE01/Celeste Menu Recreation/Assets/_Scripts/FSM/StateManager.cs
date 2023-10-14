@@ -8,7 +8,9 @@ public class StateManager {
         Title,
         Menu,
         SaveSelect,
+        NewGame,
         Credits,
+        LevelSelect,
         Exit
     }
     Dictionary<States, State> states = new Dictionary<States, State>();
@@ -19,7 +21,9 @@ public class StateManager {
         states[States.Menu] = new MenuState(manager.MenuObjects, this);
         states[States.Credits] = new CreditState(manager.CreditObjects, this);
         states[States.SaveSelect] = new SaveSelectState(manager.SaveObjects, this);
-        //states[States.Exit] = new CleanRoomState(player, this);
+        states[States.NewGame] = new NewGameState(manager.NewGameObjects, this);
+        states[States.LevelSelect] = new LevelSelectState(manager.LevelSelectObjects, this);
+        /*states[States.Exit] = new CleanRoomState(player, this);*/
         foreach (State state in states.Values) {
             state.Setup();
         }
@@ -39,5 +43,13 @@ public class StateManager {
 
     public State Save() {
         return states[States.SaveSelect];   
+    }
+
+    public State NewGame() {
+        return states[States.NewGame];
+    }
+
+    public State LevelSelect() {
+        return states[States.LevelSelect];
     }
 }

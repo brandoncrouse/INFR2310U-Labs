@@ -57,6 +57,7 @@ public class MenuState : State {
                 break;
             case 4:
                 menuBar.DOAnchorPosX(-500, .7f);
+                BlackScreen.Instance.On();
                 break;
             default:
                 menuItems[index].Error();

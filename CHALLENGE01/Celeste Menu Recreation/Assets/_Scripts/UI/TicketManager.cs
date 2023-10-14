@@ -8,7 +8,8 @@ public class TicketManager : MonoBehaviour {
     List<RectTransform> ticketRects = new List<RectTransform>();
     List<Vector3> ticketPositions = new List<Vector3>();
     [SerializeField] float selectedPos, outPosUp, outPosDown, selectionSelectPos;
-    bool selecting;
+    public bool selecting;
+    public int index;
     private void Awake() {
         foreach(Transform child in transform) {
             tickets.Add(child.GetComponent<Ticket>());
@@ -18,6 +19,7 @@ public class TicketManager : MonoBehaviour {
     }
 
     public void Select(int index) {
+        this.index = index;
         selecting = true;
         for (int i = 0; i < tickets.Count; i++) {
             if (i == index) {

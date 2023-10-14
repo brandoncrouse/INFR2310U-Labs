@@ -1,3 +1,4 @@
+using Cinemachine;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,8 +40,14 @@ public class TicketSelection : MonoBehaviour {
             case Type.Error:
                 Error();
                 break;
-            case Type.Level: break;
-            case Type.New: break;
+            case Type.Level:
+                CinemachineCore.Instance.GetActiveBrain(0).m_DefaultBlend.m_Time = .5f;
+                GameManager.Instance.SwitchState(GameManager.Instance.stateManager.LevelSelect());
+                break;
+            case Type.New:
+                CinemachineCore.Instance.GetActiveBrain(0).m_DefaultBlend.m_Time = .7f;
+                GameManager.Instance.SwitchState(GameManager.Instance.stateManager.NewGame());
+                break;
         }
     }
 

@@ -8,8 +8,9 @@ public class GameManager : MonoBehaviour {
     public State currentState {  get; private set; }  
     public StateManager stateManager { get; private set; }  
 
-    public GameObject[] TitleObjects, MenuObjects, CreditObjects, SaveObjects;
-    public bool Switching;
+    public GameObject[] TitleObjects, MenuObjects, CreditObjects, SaveObjects, NewGameObjects, LevelSelectObjects;
+    public GameObject[] VCams;
+    public bool Switching, MaintainCard;
     public float menuSlideTime;
 
     public event Action<int> MenuInteractEvent;
