@@ -2,7 +2,7 @@
 ● SUBMISSION DATE: DATE OF SUBMISSION - 2023-10-22
 ● LAB: LAB-03: Simple Navigation
 
-QUICK LINKS TO VIDEOS (also linked in subfolders' readmes):
+QUICK LINKS TO VIDEOS:
 	ACT: https://youtu.be/kdQFPJHP1BA
 	ANALYSIS: https://youtu.be/kQsXFQIUJ40
 	DEMONSTRATION: https://youtu.be/C4giC5im7dQ
