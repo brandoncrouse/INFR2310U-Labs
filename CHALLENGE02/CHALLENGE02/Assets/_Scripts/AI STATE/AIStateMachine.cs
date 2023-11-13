@@ -39,7 +39,7 @@ public class AIStateMachine : AbstractFiniteStateMachine {
     public class PatrolState : AbstractState {
         AIStateMachine parent;
         public override void OnEnter() {
-            parent = _parentStateMachine.GetComponent<AIStateMachine>();
+            parent = GetStateMachine< AIStateMachine>();
         }
         public override void OnUpdate() {
             parent.animator.SetBool("Walking", parent.patrol.isWaiting);
@@ -64,7 +64,7 @@ public class AIStateMachine : AbstractFiniteStateMachine {
         float distance = 8;
         public override void OnEnter() {
 
-            parent = _parentStateMachine.GetComponent<AIStateMachine>();
+            parent = GetStateMachine< AIStateMachine>();
 
             fillFactor = 1f / fillTime;
 
@@ -106,7 +106,7 @@ public class AIStateMachine : AbstractFiniteStateMachine {
         NavMeshAgent agent;
 
         public override void OnEnter() {
-            parent = _parentStateMachine.GetComponent<AIStateMachine>();
+            parent = GetStateMachine< AIStateMachine>();
             parent.alertCanvas.alpha = 1;
             agent = parent.agent;
 
@@ -139,7 +139,7 @@ public class AIStateMachine : AbstractFiniteStateMachine {
         float timer, pretimer;
 
         public override void OnEnter() {
-            parent = _parentStateMachine.GetComponent<AIStateMachine>();
+            parent = GetStateMachine< AIStateMachine>();
 
             parent.alertCanvas.alpha = 0;
             parent.questionCanvas.alpha = 0;
@@ -176,7 +176,7 @@ public class AIStateMachine : AbstractFiniteStateMachine {
         AIStateMachine parent;
 
         public override void OnEnter() {
-            parent = _parentStateMachine.GetComponent<AIStateMachine>();
+            parent = GetStateMachine< AIStateMachine>();
 
             parent.patrol.InterruptPatrol();
             parent.agent.isStopped = true;
