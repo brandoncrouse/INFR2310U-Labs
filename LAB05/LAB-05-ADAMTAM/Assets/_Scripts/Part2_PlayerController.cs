@@ -8,25 +8,25 @@ using DG.Tweening;
 public class Part2_PlayerController : MonoBehaviour {
     [SerializeField] FastIKFabric[] iks;
     [SerializeField] Transform lFoot, rFoot, lTarget, rTarget, model;
-    PlayerInput input;
-    bool moving;
+    bool moving, canRotate = true;
     Vector2 moveDirection;
     Vector3 intendedDirection;
     Rigidbody rb;
     Transform cam;
     Animator anim;
+    int currentWallContacts = 0;
+    [SerializeField] int lookIndex;
     [SerializeField] float moveSpeed, rotateSpeed;
 
     private readonly int IDLE = Animator.StringToHash("Idle");
     private readonly int MOVE = Animator.StringToHash("Run");
     private void Awake() {
         rb = GetComponent<Rigidbody>();
-        input = GetComponent<PlayerInput>();
         cam = Camera.main.transform;
         anim = GetComponent<Animator>();
     }
     void Start() {
-        SetIKs(false);
+        SetIKs(true);
     }
 
     void Update() {
@@ -40,13 +40,8 @@ public class Part2_PlayerController : MonoBehaviour {
             }
         }
 
-        Quaternion playerRotation = transform.rotation;
-        Quaternion targetRotation = Quaternion.identity;
-
-        if (intendedDirection != Vector3.zero) {
-            targetRotation = Quaternion.LookRotation(intendedDirection);
-            transform.rotation = Quaternion.Slerp(playerRotation, targetRotation, rotateSpeed * Time.deltaTime);
-        }
+        if (canRotate) Rotate(intendedDirection);
+        
     }
 
     private void FixedUpdate() {
@@ -93,6 +88,35 @@ public class Part2_PlayerController : MonoBehaviour {
         } else if (ctx.phase == InputActionPhase.Canceled) {
             model.DOLocalMoveY(0f, .2f);
 
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (!collision.gameObject.CompareTag("Wall")) return;
+        currentWallContacts++;
+        canRotate = false;
+    }
+
+    private void OnCollisionExit(Collision collision) {
+        if (!collision.gameObject.CompareTag("Wall")) return;
+        currentWallContacts--;
+        if (currentWallContacts == lookIndex) {
+            canRotate = true;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision) {
+        if (!collision.gameObject.CompareTag("Wall")) return;
+        Rotate(collision.GetContact(0).normal);
+    }
+
+    void Rotate(Vector3 direction) {
+        Quaternion playerRotation = transform.rotation;
+        Quaternion targetRotation = Quaternion.identity;
+
+        if (direction != Vector3.zero) {
+            targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(playerRotation, targetRotation, rotateSpeed * Time.deltaTime);
         }
     }
 }
