@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayActions {
     [SerializeField] Transform rotatable;
     bool grounded;
 
+    public Transform PlayerTransform { get { return transform; } }
+
     private void Awake() {
         inputActions = new PlayerInputActions();
         rb = GetComponent<Rigidbody>();
@@ -51,6 +53,14 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayActions {
 
         // gravity
         if (!grounded) rb.velocity += Vector3.down * gravity;
+
+        // Check for interactables
+        Ray interactableRay = new Ray(cam.position, cam.forward);
+        if (Physics.Raycast(interactableRay, out RaycastHit hit, 1)) {
+            if (hit.transform is IInteractable) {
+                print("whefiwf");
+            }
+        }
     }
     private void LateUpdate() {
         verticalRotation = Mathf.Clamp(verticalRotation - lookDelta.y * sens * Time.deltaTime, -90, 90);
@@ -81,4 +91,8 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayActions {
     public void OnJump(InputAction.CallbackContext context) {
         if (grounded) rb.AddForce(Vector3.up * jumpSpeed, ForceMode.VelocityChange);
     }
+}
+
+public interface IInteractable {
+    public void Interact(PlayerController controller);
 }
