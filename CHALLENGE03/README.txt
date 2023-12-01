@@ -5,6 +5,7 @@
 QUICK LINKS TO VIDEOS:
 Part 1: -----
 Part 2: https://youtu.be/nFhB7vQT_wM
+Part 3: DNF
 
 ●Attestation
 I, Adam Tam and Brandon Crouse, understand that I am bound by Ontario Tech’s Academic Integrity Policy (https://usgc.ontariotechu.ca/policy/policy-library/policies/academic/academic-integrity-policy.php) which sets out the kinds of actions that constitute academic misconduct, including plagiarism, copying or allowing one’s own work to copied, use of unauthorized aids in examinations and tests, submitting work prepared in collaboration with another student when such collaboration has not been authorized, among other academic offences.
