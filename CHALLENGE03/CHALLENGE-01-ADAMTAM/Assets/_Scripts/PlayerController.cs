@@ -10,13 +10,13 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayActions {
     private PlayerInputActions inputActions;
     private Rigidbody rb;
-    private Transform cam;
+    private Transform cam, currentHeldObject;
     private CapsuleCollider coll;
     private Animator animator;
     Vector3 rawMove = Vector3.zero, relMove = Vector3.zero;
     Vector2 lookDelta;
     float verticalRotation = 0;
-    bool grounded, canMove;
+    bool grounded, canMove, crouching;
 
     readonly int IDLE = Animator.StringToHash("Idle");
     readonly int WALK = Animator.StringToHash("Walk");
@@ -115,13 +115,29 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayActions {
 
     public void OnInteract(InputAction.CallbackContext context) {
         if (context.phase != InputActionPhase.Performed) return;
-        if (currentInteractable == null) return;
+        if (currentInteractable == null || currentHeldObject != null) return;
         currentInteractable.Interact(this);
     }
 
     public void OnJump(InputAction.CallbackContext context) {
         if (context.phase != InputActionPhase.Performed) return;
         if (grounded) rb.AddForce(Vector3.up * jumpSpeed, ForceMode.VelocityChange);
+    }
+
+    public void OnCrouch(InputAction.CallbackContext context) {
+        if (context.phase != InputActionPhase.Performed) return;
+        crouching = !crouching;
+        float crouchProgress = crouching ? 0 : 1;
+        DOTween.To(() => crouchProgress, x => crouchProgress = x, crouching ? 1 : 0, .4f).OnUpdate(() => {
+            //cam.localPosition = Vector3.Lerp(Vector3.up * 1.3f, new Vector3(-.51f, .56f, .06f), crouchProgress);
+            animator.SetLayerWeight(2, crouchProgress);
+        });
+
+    }
+
+    public void OnDrop(InputAction.CallbackContext context) {
+        if (context.phase != InputActionPhase.Performed) return;
+        DropObject();
     }
 
     void ProcessEvent(Message message) {
@@ -166,17 +182,40 @@ public class PlayerController : MonoBehaviour, PlayerInputActions.IPlayActions {
         if (left) {
             leftHandIK.enabled = true;
             leftHandIK.Target = target;
-            //leftHandTarget.DOMove(position, time);
         } else {
             rightHandIK.enabled = true;
             rightHandIK.Target = target;
-            //rightHandTarget.DOMove(position, time);
         }
     }
 
     public void ResetHands() {
         rightHandIK.enabled = false;
         leftHandIK.enabled = false;
+    }
+
+    public void AttachToHand(Transform t) {
+        t.parent = rightHandIK.transform;
+        t.position = RightHandIK.transform.position;
+        currentHeldObject = t;
+        animator.SetFloat("Blend", (currentHeldObject.GetComponent<Holdable>().twoHanded) ? 1 : 0);
+        float handProgress = 0;
+        DOTween.To(() => handProgress, x => handProgress = x, 1, .4f).OnUpdate(() => {
+            animator.SetLayerWeight(1, handProgress);
+        });
+    }
+
+    void DropObject() {
+        if (!currentHeldObject) return;
+        currentHeldObject.GetComponent<IInteractable>().CanInteract = true;
+        currentHeldObject.GetComponent<Rigidbody>().useGravity = true;
+        currentHeldObject.GetComponent<Rigidbody>().isKinematic = false;
+        currentHeldObject.GetComponent<Collider>().enabled = true;
+        currentHeldObject.parent = null;
+        currentHeldObject = null;
+        float handProgress = 1;
+        DOTween.To(() => handProgress, x => handProgress = x, 0, .4f).OnUpdate(() => {
+            animator.SetLayerWeight(1, handProgress);
+        });
     }
 }
 
@@ -185,4 +224,20 @@ public interface IInteractable {
     public bool CanInteract { get; set; }
 
     public void Interact(PlayerController controller);
+}
+
+public abstract class Holdable : MonoBehaviour, IInteractable {
+    public bool twoHanded = false;
+    bool canInteract = true;
+    protected abstract string description { get; set; }    
+    public string Description { get => description; set { } }
+    public bool CanInteract { get => canInteract; set => canInteract = value; }
+
+    public void Interact(PlayerController controller) {
+        controller.AttachToHand(transform);
+        CanInteract = false;
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+        GetComponent<Collider>().enabled = false;
+    }
 }
