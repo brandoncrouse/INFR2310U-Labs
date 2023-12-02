@@ -3,6 +3,23 @@
 ● CHALLENGE: CHALLENGE 03: CHARACTER ANIM.
 
 NOTE: The Unity folder is titled CHALLENGE-01-ADAMTAM, but is actually the folder for this challenge (CHALLENGE 03: CHARACTER ANIM)
+
+External tools/resources used:
+● Cinemachine
+● Dotween
+● FastIK
+● Mixamo (model + animations)
+  ● Ch11_nonPBR
+    ● Breathing_Idle
+    ● Standard_Walk
+    ● Box_Idle
+    ● Crouching_Idle
+    ● Running
+● Sketchfab
+  ● https://sketchfab.com/3d-models/frog-low-poly-animation-e162d0ecfe6e42f5a3afc4e0893bc560
+  ● https://sketchfab.com/3d-models/low-poly-computer-with-devices-721d8c3c3c9a493bb8f7da6d9ac197d1
+  ● https://sketchfab.com/3d-models/cup-7d450bb714034fceaa7b59a0e564f46b
+
 QUICK LINKS TO VIDEOS:
 Part 1: -----
 Part 2: https://youtu.be/nFhB7vQT_wM
