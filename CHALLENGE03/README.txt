@@ -2,6 +2,7 @@
 ● SUBMISSION DATE: DATE OF SUBMISSION - 2023-12-1
 ● CHALLENGE: CHALLENGE 03: CHARACTER ANIM.
 
+NOTE: The Unity folder is titled CHALLENGE-01-ADAMTAM, but is actually the folder for this challenge (CHALLENGE 03: CHARACTER ANIM)
 QUICK LINKS TO VIDEOS:
 Part 1: -----
 Part 2: https://youtu.be/nFhB7vQT_wM
